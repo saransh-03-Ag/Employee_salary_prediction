@@ -1,10 +1,4 @@
 import streamlit as st
-import os
-
-st.write("📂 Working directory:", os.getcwd())
-st.write("📁 Files here:", os.listdir())
-
-import streamlit as st
 import pandas as pd
 import joblib
 import warnings
@@ -12,8 +6,6 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 # Load the trained model
 model = joblib.load("best_model.pkl")
-
-
 
 # Custom Page Title
 st.set_page_config(page_title="Income Prediction", layout="centered")
@@ -78,17 +70,20 @@ if st.button("🔮 Predict Income"):
         'native-country': [native_country]
     })
 
- # After getting the prediction
- 
-prediction = model.predict(input_data)[0]
+    st.write("Input data for prediction:")
+    st.write(input_data)
 
-st.markdown("---")
-st.subheader("🎯 Prediction Result")
-st.success(f"**Predicted Income:** {prediction}")
+    try:
+        prediction = model.predict(input_data)[0]
 
-# Add custom comment based on prediction
-if prediction == '<=50K':
-    st.info("It seems your predicted income is on the lower side. Consider ways to improve your skills or explore higher-paying job opportunities!")
-else:
-    st.info("Great! Your predicted income is above 50K. Keep up the good work!")
+        st.markdown("---")
+        st.subheader("🎯 Prediction Result")
+        st.success(f"**Predicted Income:** {prediction}")
 
+        if prediction == '<=50K':
+            st.info("It seems your predicted income is on the lower side. Consider ways to improve your skills or explore higher-paying job opportunities!")
+        else:
+            st.info("Great! Your predicted income is above 50K. Keep up the good work!")
+
+    except Exception as e:
+        st.error(f"Prediction error: {e}")
