@@ -29,7 +29,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # App Header
-st.markdown("<h1 style='text-align: center; color: #4B8BBE;'>💼 Salary Prediction App</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #4B8BBE;'>💼 Employee Salary Prediction App</h1>", unsafe_allow_html=True)
 st.markdown("### 👇 Please enter the following details to predict your income class:")
 
 # Input layout using columns
