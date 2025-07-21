@@ -87,6 +87,6 @@ if st.button("🔮 Predict Income"):
 st.markdown("""
     <hr>
     <p style='text-align: center; color: gray; font-size: 12px;'>
-        Created by <strong>Saransh</strong> 🚀
+        Created by <strong>Saransh Agnihotri</strong> 🚀
     </p>
 """, unsafe_allow_html=True)
