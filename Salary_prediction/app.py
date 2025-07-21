@@ -1,4 +1,10 @@
 import streamlit as st
+import os
+
+st.write("📂 Working directory:", os.getcwd())
+st.write("📁 Files here:", os.listdir())
+
+import streamlit as st
 import pandas as pd
 import joblib
 import warnings
