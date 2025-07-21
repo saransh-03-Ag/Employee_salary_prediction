@@ -29,7 +29,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # App Header
-st.markdown("<h1 style='text-align: center; color: #4B8BBE;'>💼 Income Prediction App</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #4B8BBE;'>💼 Salary Prediction App</h1>", unsafe_allow_html=True)
 st.markdown("### 👇 Please enter the following details to predict your income class:")
 
 # Input layout using columns
@@ -39,7 +39,6 @@ with col1:
     age = st.number_input("🎂 Age", min_value=0, max_value=100, value=30)
     fnlwgt = st.number_input("📊 Fnlwgt", min_value=0, max_value=1000000, value=100000)
     education = st.number_input("🎓 Education (Encoded)", min_value=0, max_value=20, value=10)  # Added education
-    educational_num = st.number_input("🎓 Educational Number", min_value=0, max_value=20, value=10)
     marital_status = st.number_input("💍 Marital Status (Encoded)", min_value=0, max_value=10, value=1)
     occupation = st.number_input("🛠️ Occupation (Encoded)", min_value=0, max_value=20, value=5)
     race = st.number_input("🌎 Race (Encoded)", min_value=0, max_value=10, value=1)
@@ -59,8 +58,7 @@ if st.button("🔮 Predict Income"):
         'age': [age],
         'workclass': [workclass],
         'fnlwgt': [fnlwgt],
-        'education': [education],
-        'educational-num': [educational_num],
+        'education': [education],  # Added education feature here
         'marital-status': [marital_status],
         'occupation': [occupation],
         'relationship': [relationship],
@@ -72,19 +70,23 @@ if st.button("🔮 Predict Income"):
         'native-country': [native_country]
     })
 
-    label_map = {0: '<=50K', 1: '>50K'}
+    prediction = model.predict(input_data)[0]
 
-    try:
-        prediction = model.predict(input_data)[0]
-        pred_label = label_map.get(prediction, "Unknown")
+    st.markdown("---")
+    st.subheader("🎯 Prediction Result")
 
-        st.markdown("---")
-        st.subheader("🎯 Prediction Result")
-        st.success(f"**Predicted Income:** {pred_label}")
+    # Assuming your model's output is 0 or 1 for income class
+    if prediction == 0:
+        st.success("**Predicted Income:** <=50K")
+        st.info("It seems your predicted income is on the lower side. Consider ways to improve your skills or explore higher-paying job opportunities!")
+    else:
+        st.success("**Predicted Income:** >50K")
+        st.info("Great! Your predicted income is above 50K. Keep up the good work!")
 
-        if pred_label == '<=50K':
-            st.info("It seems your predicted income is on the lower side. Consider ways to improve your skills or explore higher-paying job opportunities!")
-        else:
-            st.info("Great! Your predicted income is above 50K. Keep up the good work!")
-    except Exception as e:
-        st.error(f"Prediction error: {e}")
+# Footer / Credit
+st.markdown("""
+    <hr>
+    <p style='text-align: center; color: gray; font-size: 12px;'>
+        Created by <strong>Saransh</strong> 🚀
+    </p>
+""", unsafe_allow_html=True)
