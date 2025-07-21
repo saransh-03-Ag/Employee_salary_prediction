@@ -59,7 +59,7 @@ if st.button("🔮 Predict Income"):
         'age': [age],
         'workclass': [workclass],
         'fnlwgt': [fnlwgt],
-        'education': [education],  # Included education here
+        'education': [education],
         'educational-num': [educational_num],
         'marital-status': [marital_status],
         'occupation': [occupation],
@@ -72,13 +72,17 @@ if st.button("🔮 Predict Income"):
         'native-country': [native_country]
     })
 
+    label_map = {0: '<=50K', 1: '>50K'}
+
     try:
         prediction = model.predict(input_data)[0]
+        pred_label = label_map.get(prediction, "Unknown")
+
         st.markdown("---")
         st.subheader("🎯 Prediction Result")
-        st.success(f"**Predicted Income:** {prediction}")
+        st.success(f"**Predicted Income:** {pred_label}")
 
-        if prediction == '<=50K':
+        if pred_label == '<=50K':
             st.info("It seems your predicted income is on the lower side. Consider ways to improve your skills or explore higher-paying job opportunities!")
         else:
             st.info("Great! Your predicted income is above 50K. Keep up the good work!")
