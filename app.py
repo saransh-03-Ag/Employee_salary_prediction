@@ -1,6 +1,3 @@
-st.write("Expected feature names:", model.feature_names_in_)
-st.write("Input data columns:", input_data.columns.tolist())
-
 import streamlit as st
 import pandas as pd
 import joblib
@@ -10,22 +7,8 @@ warnings.filterwarnings("ignore", category=UserWarning)
 # Load the trained model
 model = joblib.load("best_model.pkl")
 
-# ✅ Hardcoded feature names (must match training order exactly)
-feature_names = [
-    'age',
-    'workclass',
-    'fnlwgt',
-    'education',
-    'marital_status',
-    'occupation',
-    'relationship',
-    'race',
-    'gender',
-    'capital_gain',
-    'capital_loss',
-    'hours_per_week',
-    'native_country'
-]
+# ✅ Get feature names used during training
+feature_names = list(model.feature_names_in_)
 
 # Custom Page Title
 st.set_page_config(page_title="Income Prediction", layout="centered")
@@ -74,33 +57,33 @@ with col2:
 
 # Prediction button
 if st.button("🔮 Predict Income"):
-    # Create input dictionary
+    # Match the exact feature names used during training
     input_dict = {
         'age': age,
         'workclass': workclass,
         'fnlwgt': fnlwgt,
         'education': education,
-        'marital_status': marital_status,
+        'marital-status': marital_status,
         'occupation': occupation,
         'relationship': relationship,
         'race': race,
         'gender': gender,
-        'capital_gain': capital_gain,
-        'capital_loss': capital_loss,
-        'hours_per_week': hours_per_week,
-        'native_country': native_country
+        'capital-gain': capital_gain,
+        'capital-loss': capital_loss,
+        'hours-per-week': hours_per_week,
+        'native-country': native_country
     }
 
-    # Create DataFrame and ensure correct column order
+    # Create input DataFrame and reorder columns
     input_data = pd.DataFrame([input_dict])[feature_names]
 
-    # Predict
+    # Make prediction
     prediction = model.predict(input_data)[0]
 
     st.markdown("---")
     st.subheader("🎯 Prediction Result")
 
-    # Display result
+    # Output interpretation
     if prediction == 0:
         st.success("**Predicted Income:** <=50K")
         st.info("It seems your predicted income is on the lower side. Consider ways to improve your skills or explore higher-paying job opportunities!")
@@ -108,7 +91,7 @@ if st.button("🔮 Predict Income"):
         st.success("**Predicted Income:** >50K")
         st.info("Great! Your predicted income is above 50K. Keep up the good work!")
 
-# Footer / Credit
+# Footer
 st.markdown("""
     <hr>
     <p style='text-align: center; color: gray; font-size: 12px;'>
