@@ -1,3 +1,6 @@
+st.write("Expected feature names:", model.feature_names_in_)
+st.write("Input data columns:", input_data.columns.tolist())
+
 import streamlit as st
 import pandas as pd
 import joblib
