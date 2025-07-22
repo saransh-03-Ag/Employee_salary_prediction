@@ -2,14 +2,13 @@ import streamlit as st
 import pandas as pd
 import joblib
 import warnings
-
 warnings.filterwarnings("ignore", category=UserWarning)
 
-# Load the trained model and feature names
-model = joblib.load("best_model.pkl")  # Ensure correct name without spaces or parentheses
+# Load model and features
+model = joblib.load("best_model.pkl")
 feature_names = joblib.load("feature_names.pkl")
 
-# Set up the Streamlit page
+# Set Streamlit page config
 st.set_page_config(page_title="Income Prediction", layout="centered")
 
 st.markdown("""
@@ -38,19 +37,18 @@ col1, col2 = st.columns(2)
 with col1:
     age = st.number_input("🎂 Age", min_value=0, max_value=100, value=30)
     fnlwgt = st.number_input("📊 Fnlwgt", min_value=0, max_value=1000000, value=100000)
-    education = st.number_input("🎓 Education (Encoded)", min_value=0, max_value=20, value=10)
-    marital_status = st.number_input("💍 Marital Status (Encoded)", min_value=0, max_value=10, value=1)
-    occupation = st.number_input("🛠️ Occupation (Encoded)", min_value=0, max_value=20, value=5)
-    race = st.number_input("🌎 Race (Encoded)", min_value=0, max_value=10, value=1)
+    marital_status = st.text_input("💍 Marital Status", value="Never-married")
+    occupation = st.text_input("🛠️ Occupation", value="Exec-managerial")
+    race = st.text_input("🌎 Race", value="White")
     capital_gain = st.number_input("📈 Capital Gain", min_value=0, max_value=100000, value=0)
 
 with col2:
-    workclass = st.number_input("🏢 Workclass (Encoded)", min_value=0, max_value=10, value=1)
-    relationship = st.number_input("👥 Relationship (Encoded)", min_value=0, max_value=10, value=1)
-    gender = st.number_input("⚧️ Gender (0=Female, 1=Male)", min_value=0, max_value=1, value=1)
+    workclass = st.text_input("🏢 Workclass", value="Private")
+    relationship = st.text_input("👥 Relationship", value="Not-in-family")
+    gender = st.text_input("⚧️ Gender", value="Male")
     capital_loss = st.number_input("📉 Capital Loss", min_value=0, max_value=100000, value=0)
     hours_per_week = st.number_input("🕒 Hours Per Week", min_value=0, max_value=168, value=40)
-    native_country = st.number_input("🌐 Native Country (Encoded)", min_value=0, max_value=100, value=1)
+    native_country = st.text_input("🌐 Native Country", value="United-States")
 
 # Predict button
 if st.button("🔮 Predict Income"):
@@ -58,7 +56,6 @@ if st.button("🔮 Predict Income"):
         'age': age,
         'workclass': workclass,
         'fnlwgt': fnlwgt,
-        'education': education,
         'marital-status': marital_status,
         'occupation': occupation,
         'relationship': relationship,
@@ -71,7 +68,6 @@ if st.button("🔮 Predict Income"):
     }
 
     try:
-        # Ensure correct column order
         input_df = pd.DataFrame([input_dict])[feature_names]
         prediction = model.predict(input_df)[0]
 
@@ -83,8 +79,9 @@ if st.button("🔮 Predict Income"):
             st.success("**Predicted Income:** >50K")
 
     except KeyError as e:
-        st.error(f"KeyError: Input features do not match model requirements.\nMissing or extra keys: {e}")
+        st.error(f"❌ Input mismatch: {e}")
 
+# Footer
 st.markdown("""
     <hr>
     <p style='text-align: center; color: gray; font-size: 12px;'>
