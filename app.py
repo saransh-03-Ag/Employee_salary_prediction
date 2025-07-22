@@ -6,7 +6,7 @@ import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
 # ✅ Load the model and feature names
-model = joblib.load("best_model .pkl")
+model = joblib.load("best_model.pkl")
 feature_names = joblib.load("feature_names.pkl")  # List of columns model expects
 
 # ✅ Streamlit Page Config
