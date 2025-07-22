@@ -3,17 +3,15 @@ import pandas as pd
 import joblib
 import warnings
 
-# Suppress warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
-# Load model and feature names
-model = joblib.load("best_model.pkl")  # NOTE: No (3) or spaces
+# Load the trained model and feature names
+model = joblib.load("best_model.pkl")  # Ensure correct name without spaces or parentheses
 feature_names = joblib.load("feature_names.pkl")
 
-# Streamlit page settings
+# Set up the Streamlit page
 st.set_page_config(page_title="Income Prediction", layout="centered")
 
-# Custom style
 st.markdown("""
     <style>
         .stButton>button {
@@ -34,7 +32,7 @@ st.markdown("""
 st.markdown("<h1 style='text-align: center; color: #4B8BBE;'>💼 Employee Salary Prediction App</h1>", unsafe_allow_html=True)
 st.markdown("### 👇 Please enter the following details to predict your income class:")
 
-# Input fields
+# Input layout
 col1, col2 = st.columns(2)
 
 with col1:
@@ -56,7 +54,6 @@ with col2:
 
 # Predict button
 if st.button("🔮 Predict Income"):
-    # Prepare input data
     input_dict = {
         'age': age,
         'workclass': workclass,
@@ -73,19 +70,21 @@ if st.button("🔮 Predict Income"):
         'native-country': native_country
     }
 
-    input_df = pd.DataFrame([input_dict])[feature_names]
+    try:
+        # Ensure correct column order
+        input_df = pd.DataFrame([input_dict])[feature_names]
+        prediction = model.predict(input_df)[0]
 
-    # Make prediction
-    prediction = model.predict(input_df)[0]
+        st.markdown("---")
+        st.subheader("🎯 Prediction Result")
+        if prediction == 0:
+            st.success("**Predicted Income:** <=50K")
+        else:
+            st.success("**Predicted Income:** >50K")
 
-    st.markdown("---")
-    st.subheader("🎯 Prediction Result")
-    if prediction == 0:
-        st.success("**Predicted Income:** ≤ 50K")
-    else:
-        st.success("**Predicted Income:** > 50K")
+    except KeyError as e:
+        st.error(f"KeyError: Input features do not match model requirements.\nMissing or extra keys: {e}")
 
-# Footer
 st.markdown("""
     <hr>
     <p style='text-align: center; color: gray; font-size: 12px;'>
