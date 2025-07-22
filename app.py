@@ -2,17 +2,15 @@ import streamlit as st
 import pandas as pd
 import joblib
 import warnings
-
 warnings.filterwarnings("ignore", category=UserWarning)
 
-# ✅ Load the model and feature names
+# Load the trained model and feature names
 model = joblib.load("best_model.pkl")
-feature_names = joblib.load("feature_names.pkl")  # List of columns model expects
+feature_names = joblib.load("feature_names.pkl")
 
-# ✅ Streamlit Page Config
+# Set up the Streamlit page
 st.set_page_config(page_title="Income Prediction", layout="centered")
 
-# ✅ Page Styling and Header
 st.markdown("""
     <style>
         .stButton>button {
@@ -33,8 +31,9 @@ st.markdown("""
 st.markdown("<h1 style='text-align: center; color: #4B8BBE;'>💼 Employee Salary Prediction App</h1>", unsafe_allow_html=True)
 st.markdown("### 👇 Please enter the following details to predict your income class:")
 
-# ✅ Input Form (UI)
+# Input layout
 col1, col2 = st.columns(2)
+
 with col1:
     age = st.number_input("🎂 Age", min_value=0, max_value=100, value=30)
     fnlwgt = st.number_input("📊 Fnlwgt", min_value=0, max_value=1000000, value=100000)
@@ -52,7 +51,7 @@ with col2:
     hours_per_week = st.number_input("🕒 Hours Per Week", min_value=0, max_value=168, value=40)
     native_country = st.number_input("🌐 Native Country (Encoded)", min_value=0, max_value=100, value=1)
 
-# ✅ Prediction Button Logic
+# Prepare input for prediction
 if st.button("🔮 Predict Income"):
     input_dict = {
         'age': age,
@@ -70,23 +69,19 @@ if st.button("🔮 Predict Income"):
         'native-country': native_country
     }
 
-    # ✅ Match the order and structure of model's features
+    # Convert to DataFrame and ensure correct column order
     input_data = pd.DataFrame([input_dict])[feature_names]
 
-    # ✅ Predict
+    # Make prediction
     prediction = model.predict(input_data)[0]
 
-    # ✅ Display Result
     st.markdown("---")
     st.subheader("🎯 Prediction Result")
     if prediction == 0:
         st.success("**Predicted Income:** <=50K")
-        st.info("Consider boosting your skills or seeking higher opportunities.")
     else:
         st.success("**Predicted Income:** >50K")
-        st.info("Great job! Keep growing!")
 
-# ✅ Footer
 st.markdown("""
     <hr>
     <p style='text-align: center; color: gray; font-size: 12px;'>
