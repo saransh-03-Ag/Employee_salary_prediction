@@ -4,9 +4,25 @@ import joblib
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
-# Load the trained model and feature names
+# Load the trained model
 model = joblib.load("best_model.pkl")
-feature_names = joblib.load("feature_names.pkl")  # <-- Load feature names used during training
+
+# ✅ Hardcoded feature names (must match training order exactly)
+feature_names = [
+    'age',
+    'workclass',
+    'fnlwgt',
+    'education',
+    'marital_status',
+    'occupation',
+    'relationship',
+    'race',
+    'gender',
+    'capital_gain',
+    'capital_loss',
+    'hours_per_week',
+    'native_country'
+]
 
 # Custom Page Title
 st.set_page_config(page_title="Income Prediction", layout="centered")
@@ -55,7 +71,7 @@ with col2:
 
 # Prediction button
 if st.button("🔮 Predict Income"):
-    # Create input dictionary with correct feature names
+    # Create input dictionary
     input_dict = {
         'age': age,
         'workclass': workclass,
@@ -72,16 +88,16 @@ if st.button("🔮 Predict Income"):
         'native_country': native_country
     }
 
-    # Convert to DataFrame and reorder columns to match model
+    # Create DataFrame and ensure correct column order
     input_data = pd.DataFrame([input_dict])[feature_names]
 
-    # Make prediction
+    # Predict
     prediction = model.predict(input_data)[0]
 
     st.markdown("---")
     st.subheader("🎯 Prediction Result")
 
-    # Interpret prediction
+    # Display result
     if prediction == 0:
         st.success("**Predicted Income:** <=50K")
         st.info("It seems your predicted income is on the lower side. Consider ways to improve your skills or explore higher-paying job opportunities!")
