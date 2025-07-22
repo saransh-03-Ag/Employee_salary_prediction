@@ -2,15 +2,18 @@ import streamlit as st
 import pandas as pd
 import joblib
 import warnings
+
+# Suppress warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
-# Load the trained model and feature names
-model = joblib.load("best_model (3).pkl")
-feature_names = joblib.load("feature_names (1).pkl")
+# Load model and feature names
+model = joblib.load("best_model.pkl")  # NOTE: No (3) or spaces
+feature_names = joblib.load("feature_names.pkl")
 
-# Set up the Streamlit page
+# Streamlit page settings
 st.set_page_config(page_title="Income Prediction", layout="centered")
 
+# Custom style
 st.markdown("""
     <style>
         .stButton>button {
@@ -31,7 +34,7 @@ st.markdown("""
 st.markdown("<h1 style='text-align: center; color: #4B8BBE;'>💼 Employee Salary Prediction App</h1>", unsafe_allow_html=True)
 st.markdown("### 👇 Please enter the following details to predict your income class:")
 
-# Input layout
+# Input fields
 col1, col2 = st.columns(2)
 
 with col1:
@@ -51,8 +54,9 @@ with col2:
     hours_per_week = st.number_input("🕒 Hours Per Week", min_value=0, max_value=168, value=40)
     native_country = st.number_input("🌐 Native Country (Encoded)", min_value=0, max_value=100, value=1)
 
-# Prepare input for prediction
+# Predict button
 if st.button("🔮 Predict Income"):
+    # Prepare input data
     input_dict = {
         'age': age,
         'workclass': workclass,
@@ -69,19 +73,19 @@ if st.button("🔮 Predict Income"):
         'native-country': native_country
     }
 
-    # Convert to DataFrame and ensure correct column order
-    input_data = pd.DataFrame([input_dict])[feature_names]
+    input_df = pd.DataFrame([input_dict])[feature_names]
 
     # Make prediction
-    prediction = model.predict(input_data)[0]
+    prediction = model.predict(input_df)[0]
 
     st.markdown("---")
     st.subheader("🎯 Prediction Result")
     if prediction == 0:
-        st.success("**Predicted Income:** <=50K")
+        st.success("**Predicted Income:** ≤ 50K")
     else:
-        st.success("**Predicted Income:** >50K")
+        st.success("**Predicted Income:** > 50K")
 
+# Footer
 st.markdown("""
     <hr>
     <p style='text-align: center; color: gray; font-size: 12px;'>
