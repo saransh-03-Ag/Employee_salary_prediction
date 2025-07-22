@@ -5,8 +5,8 @@ import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
 # Load the trained model and feature names
-model = joblib.load("best_model.pkl")
-feature_names = joblib.load("feature_names.pkl")
+model = joblib.load("best_model (3).pkl")
+feature_names = joblib.load("feature_names (1).pkl")
 
 # Set up the Streamlit page
 st.set_page_config(page_title="Income Prediction", layout="centered")
