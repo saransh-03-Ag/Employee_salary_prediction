@@ -4,8 +4,9 @@ import joblib
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
-# Load the trained model
+# Load the trained model and feature names
 model = joblib.load("best_model.pkl")
+feature_names = joblib.load("feature_names.pkl")  # <-- Load feature names used during training
 
 # Custom Page Title
 st.set_page_config(page_title="Income Prediction", layout="centered")
@@ -38,7 +39,7 @@ col1, col2 = st.columns(2)
 with col1:
     age = st.number_input("🎂 Age", min_value=0, max_value=100, value=30)
     fnlwgt = st.number_input("📊 Fnlwgt", min_value=0, max_value=1000000, value=100000)
-    education = st.number_input("🎓 Education (Encoded)", min_value=0, max_value=20, value=10)  # Added education
+    education = st.number_input("🎓 Education (Encoded)", min_value=0, max_value=20, value=10)
     marital_status = st.number_input("💍 Marital Status (Encoded)", min_value=0, max_value=10, value=1)
     occupation = st.number_input("🛠️ Occupation (Encoded)", min_value=0, max_value=20, value=5)
     race = st.number_input("🌎 Race (Encoded)", min_value=0, max_value=10, value=1)
@@ -54,28 +55,33 @@ with col2:
 
 # Prediction button
 if st.button("🔮 Predict Income"):
-    input_data = pd.DataFrame({
-        'age': [age],
-        'workclass': [workclass],
-        'fnlwgt': [fnlwgt],
-        'education': [education],  # Added education feature here
-        'marital-status': [marital_status],
-        'occupation': [occupation],
-        'relationship': [relationship],
-        'race': [race],
-        'gender': [gender],
-        'capital-gain': [capital_gain],
-        'capital-loss': [capital_loss],
-        'hours-per-week': [hours_per_week],
-        'native-country': [native_country]
-    })
+    # Create input dictionary with correct feature names
+    input_dict = {
+        'age': age,
+        'workclass': workclass,
+        'fnlwgt': fnlwgt,
+        'education': education,
+        'marital_status': marital_status,
+        'occupation': occupation,
+        'relationship': relationship,
+        'race': race,
+        'gender': gender,
+        'capital_gain': capital_gain,
+        'capital_loss': capital_loss,
+        'hours_per_week': hours_per_week,
+        'native_country': native_country
+    }
 
+    # Convert to DataFrame and reorder columns to match model
+    input_data = pd.DataFrame([input_dict])[feature_names]
+
+    # Make prediction
     prediction = model.predict(input_data)[0]
 
     st.markdown("---")
     st.subheader("🎯 Prediction Result")
 
-    # Assuming your model's output is 0 or 1 for income class
+    # Interpret prediction
     if prediction == 0:
         st.success("**Predicted Income:** <=50K")
         st.info("It seems your predicted income is on the lower side. Consider ways to improve your skills or explore higher-paying job opportunities!")
